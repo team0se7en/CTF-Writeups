@@ -1,6 +1,6 @@
 ## Challenge Info 
 
-Web challenge `http://chall.csivit.com:30215/` 
+Web challenge `http://chall.csivit.com:30215/` , in Summary we can login with dummy creds and it will respond with jwt token with `admin:false` then we need to get the secret key from an LFI in `getFile` to get the .env file that contain the secret and make our custom jwt token and add it to headers to get the flag from /admin route 
 
 ## Writeup summary
 
@@ -25,7 +25,7 @@ we didn't understand what was that but we had a theory that it had something wit
 
 <img src="src/login_page.png" alt="login page" style="zoom:25%;" />
 
-so first we checked if the forget password or the sign up but found they are fake so we tried login with dummy creds like `admin:admin` and we got redirected to the main page and saw a new cookie was added .
+so first we checked if the forget password or the sign up but found they are fake so we tried login with dummy creds like `admin:admin` and we got redirected to the main page .
 
 ### deep look into login 
 

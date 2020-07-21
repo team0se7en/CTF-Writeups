@@ -13,7 +13,7 @@ Web challenge `http://chall.csivit.com:30215/`
 
 first when we open the website we got a home page with a navigation bar redirecting to different pages  the only working pages are  `Our Admin` ->`/adminNames`  , `Login` -> `/login`  all the others take to the home page 
 
-<img src="blog_page.png" alt="home page" style="zoom:25%;" />
+<img src="src/blog_page.png" alt="home page" style="zoom:25%;" />
 
 when we check the `/adminNames` we got a file downloaded and then redirected to the home page again the file Name was `getFile ` we opened the file and saw a strange text here is the content of the file : 
 
@@ -23,7 +23,7 @@ csivitu/authorized_users/blob/master/
 
 we didn't understand what was that but we had a theory that it had something with **github** because of the `/blob/master` , so we continued our analysis of the website by checking the login page and as the name says we got a login form: 
 
-<img src="/home/akram09/Desktop/CTF-Writeups/csictf2020/web/ccc/login_page.png" alt="login page" style="zoom:25%;" />
+<img src="src/login_page.png" alt="login page" style="zoom:25%;" />
 
 so first we checked if the forget password or the sign up but found they are fake so we tried login with dummy creds like `admin:admin` and we got redirected to the main page and saw a new cookie was added .
 
@@ -31,7 +31,7 @@ so first we checked if the forget password or the sign up but found they are fak
 
 to get more information on how the login is working we started **BurpSuite** and  made a login with dummy creds and intercepted that request pass it to the Repeater and send the request , in result we got a token in the headers :
 
-<img src="/home/akram09/Desktop/CTF-Writeups/csictf2020/web/ccc/login_burp.png" alt="Login Burp" style="zoom:40%;" />
+<img src="src/login_burp.png" alt="Login Burp" style="zoom:40%;" />
 
 by looking at the token it is for sure a `JWT TOKEN` so we need to see the content of the content and there is no better and easy way than using the [Jwt io website](https://jwt.io/)  after decoding it we got weird values in the payload even though we have use `admin:admin ` as credentials
 
@@ -61,7 +61,7 @@ sauravhiremath
 
  so first we tried all the usernames with sample password to get something or maybe get the `admin:true` but none work , so we got stuck here and we knew that we are missing something and we remembered that we haven't intercepted the request in /adminNames so after checking it in burp we found it !!:
 
-<img src="getAdmines_burp.png" alt="getAdmines Burp" style="zoom:40%;" />
+<img src="src/getAdmines_burp.png" alt="getAdmines Burp" style="zoom:40%;" />
 
 so when we go to the `/adminNames` it redirect us to `/getFile?file=admins` so we got an LFI exploit here  and we can get any file from the server so we tried to get some files like `index.php` or `index.html` but we got file name too big  , so we can get name of a file with maximum 7 caracteres , the one file we can got is the .env file that contains useful creds, with this url `http://chall.csivit.com:30215/getFile?file=../.env`
 
@@ -75,6 +75,6 @@ this is the jwt secret we were looking to , it will allow us to sign our custom 
 
 for this we will use [Jwt io website](https://jwt.io/)  we will sign a key we got from login with creds `thbongy:password`  and set admin to true , **NOTICE ** need rot13  and we got the token 
 
-<img src="/home/akram09/Desktop/CTF-Writeups/csictf2020/web/ccc/jwt.png" alt="jwt token" style="zoom:25%;" />
+<img src="src/jwt.png" alt="jwt token" style="zoom:25%;" />
 
 and now we have to find where to post the token so we cheated :) and   ran a simple dirsearch on the website and got `/admin` that we haven't encoutered after sending GET request to /admin with Header `Authorization: Bearer ` to it we get the flag  `csictf{1n_th3_3nd_1t_d0esn't_3v3n_m4tt3r}` 

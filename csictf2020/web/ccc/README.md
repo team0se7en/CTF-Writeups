@@ -13,7 +13,7 @@ Web challenge `http://chall.csivit.com:30215/`
 
 first when we open the website we got a home page with a navigation bar redirecting to different pages  the only working pages are  `Our Admin` ->`/adminNames`  , `Login` -> `/login`  all the others take to the home page 
 
-<img src="/home/akram09/Desktop/CTF-Writeups/csictf2020/web/ccc/blog_page.png" alt="home page" style="zoom:25%;" />
+<img src="blog_page.png" alt="home page" style="zoom:25%;" />
 
 when we check the `/adminNames` we got a file downloaded and then redirected to the home page again the file Name was `getFile ` we opened the file and saw a strange text here is the content of the file : 
 
@@ -61,7 +61,7 @@ sauravhiremath
 
  so first we tried all the usernames with sample password to get something or maybe get the `admin:true` but none work , so we got stuck here and we knew that we are missing something and we remembered that we haven't intercepted the request in /adminNames so after checking it in burp we found it !!:
 
-<img src="/home/akram09/Desktop/CTF-Writeups/csictf2020/web/ccc/getAdmines_burp.png" alt="getAdmines Burp" style="zoom:40%;" />
+<img src="getAdmines_burp.png" alt="getAdmines Burp" style="zoom:40%;" />
 
 so when we go to the `/adminNames` it redirect us to `/getFile?file=admins` so we got an LFI exploit here  and we can get any file from the server so we tried to get some files like `index.php` or `index.html` but we got file name too big  , so we can get name of a file with maximum 7 caracteres , the one file we can got is the .env file that contains useful creds, with this url `http://chall.csivit.com:30215/getFile?file=../.env`
 

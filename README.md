@@ -3,7 +3,7 @@ This repositories contain writeups of some challenges we solved during participa
 ### Table of content:
 ------------------------------
 
-- [Pwn2Win2020](Pwn2WIn2020)
+- [Pwn2Win2020](Pwn2Win2020)
   - [androids_encryptions](Pwn2Win2020/androids_encryption) 
 - [csictf2020](csictf2020)
   - [web](csictf2020/web/)

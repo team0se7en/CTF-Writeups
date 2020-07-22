@@ -1,6 +1,6 @@
 ## Challenge Info 
 
-crypto challenge `nc chall.csivit.com 30431` 
+crypto challenge `nc chall.csivit.com 30431`  aes cbc bit flipping attack to change the wrong credentials and submit them to the login service 
 
 ## Writeup summary
 
@@ -15,7 +15,7 @@ In this challenge we are given a netcat session to communicate with so when conn
 
 <img src="src/netcat_result.png" alt="netcat connection" style="zoom:80%;" />
 
-so basically we are given the encryption of  the credentials that the user has entered in those two hex , the first one being the encryption of `user:c?i` and the second hex is the encryption of `pass:c?f` and we are asked to give the encryption of the correct credentiel that means we have to give them the hex encryption of `user:csi` and the hex encryption `pass:ctf`, and because we don't know the key and the iv that the  server is using  so we can't make do encryption in local so the idea here is to do an aes cbc bit flipping attack .
+so basically we are given the encryption of  the credentials that the user has entered in those two hex , the first one being the encryption of `user:c?i` and the second hex is the encryption of `pass:c?f` and we are asked to give the encryption of the correct credentials that means we have to give them the hex encryption of `user:csi` and the hex encryption `pass:ctf`, and because we don't know the key and the iv that the  server is using  so we can't make do encryption in local so the idea here is to do an aes cbc bit flipping attack .
 
 ### AES-CBC brief introduction 
 
@@ -39,7 +39,7 @@ OK now we understand how aes cbc works what about the attack !
 
 The bit flipping attack affect one byte of a specific block and it allow us to change its value to the value we want without having to decrypt it and encrypt it again .
 
-Lets define some variable first , let's say we have a cipher with 2 block `C0` and `C1` and we want to change byte number 2 in `C1` let's say also that  the reslt of decryption of each block is called `Li` so for `C0` it is `L0 `  and `Pi` is the plaintext of each block. now let's make some formula: 
+Lets define some variable first , let's say we have a cipher with 2 block `C0` and `C1` and we want to change byte number 2 in `C1` let's say also that  the result of decryption of each block is called `Li` so for `C0` it is `L0 `  and `Pi` is the plaintext of each block. now let's make some formula: 
 
 ```python
 Li = dec(Ci)
@@ -71,7 +71,7 @@ P1[2] = L1[2]xor Cp[2]
 P1[2] = L1[2] xor C0[2] xor "h" xor "a"
 ```
 
-we replace with 1 and we got `h` xor `h`  whic is 0 and anything xor 0  = anything so finnaly P1[2] = "a"
+we replace with 1 and we got `h` xor `h`  which is `\x00` and anything xor `\x00`  = anything so finnaly P1[2] = "a"
 
 and that's how the bit flipping works.
 
@@ -84,4 +84,4 @@ username_bytes[6] = username_bytes[6] ^ ord("?") ^ ord("s")
 password_bytes[6] = password_bytes[6] ^ ord("?") ^ ord("t")
 ```
 
-and send it to the service and get your flag `csictf{Sh4u!d_hav3_n0t_u5ed_CBC}`  check out the [}solve.py](solve.py) for full solution 
+and send it to the service and get your flag `csictf{Sh4u!d_hav3_n0t_u5ed_CBC}`  check out the [solve.py](solve.py) for full solution 

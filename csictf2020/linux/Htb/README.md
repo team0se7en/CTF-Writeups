@@ -30,7 +30,7 @@ By intercepting the request in burpsuite we can now add our payload of nosqli we
 
 Annnddd we got redirection so nosqlinjection did work and this website is vulnerable to nosqlinjection , next thing to do when you have a vulnerable website to nosql injection is to leak the credentials and this is possible by using the regex ability in mongodb , by sending this payload `password[$regex]=m.*` mongodb will interpret this as  username start with m in regex `^m.*` so to extract information we have to make a script that bruteforce all the caracteres each at time and here is our [script](src/nosqlin.py) , wait for some time ..... and finally the creds for admin are `admin:d2f312ed7ed60ea79e3ab3d16ab2f8db` after logging with we got redirected to /home with a zip upload page 
 
-<img src="/home/akram09/Desktop/CTF-Writeups/csictf2020/linux/Htb/src/zip_extract.png" alt="/home page" style="zoom:67%;" /> 
+<img src="src/zip_extract.png" alt="/home page" style="zoom:67%;" /> 
 
 let's just check the /admin page first we got a zip extractor and by checking the source code we found the flag for **Htbx02** and here is it `csictf{n0t_4ll_1nj3ct10n5_4re_SQLi}` 
 

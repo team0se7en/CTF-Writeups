@@ -35,7 +35,7 @@ OK now we understand how aes cbc works what about the attack !
 
 ### perform attack 
 
-<img src="/home/akram09/Desktop/CTF-Writeups/csictf2020/crypto/login_error/src/082113_1459_cbcbyteflip3.jpg" alt="aes bit flipping" style="zoom:67%;" />
+<img src="src/082113_1459_cbcbyteflip3.jpg" alt="aes bit flipping" style="zoom:67%;" />
 
 The bit flipping attack affect one byte of a specific block and it allow us to change its value to the value we want without having to decrypt it and encrypt it again .
 

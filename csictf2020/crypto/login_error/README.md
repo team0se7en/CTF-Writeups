@@ -40,30 +40,37 @@ OK now we understand how aes cbc works what about the attack !
 The bit flipping attack affect one byte of a specific block and it allow us to change its value to the value we want without having to decrypt it and encrypt it again .
 
 Lets define some variable first , let's say we have a cipher with 2 block `C0` and `C1` and we want to change byte number 2 in `C1` let's say also that  the reslt of decryption of each block is called `Li` so for `C0` it is `L0 `  and `Pi` is the plaintext of each block. now let's make some formula: 
-$$
-Li = dec(Ci)
-$$
 
-$$
-Pi = Li \oplus C(i-1)
-$$
+```python
+Li = dec(Ci)
+Pi = Li xor C(i-1)
+```
 
 so if we change a value of a byte in a cipher block it will affect the byte of the same position in the next block but how can we know the specific value that will help ,well there is a way to do it let's say that we want to change byte number 2 which value is h (the value in the plaintext ) and want to change it to `a` here are some formula that will help us do this:
-$$
-C0'[2] = C0[2] \oplus  "h" \oplus "a"
-$$
+
+```python
+Cp0[2] = C0[2] xor "h" xor "a"
+```
+
 this will allow us to change the second byte of the second block from `h` to `a`. WHAT STill don't understand okey let's see in the decryption what will happen after changing the `C0[2]` 
-$$
-P1[2] = L1[2] \oplus C0[2]
-$$
-and we know that before changing the first cipher we got this lets call it 1
-$$
-"h" = L1[2] \oplus C0[2]
-$$
+
+```python
+P1[2] = L1[2] xor C0[2]
+```
+
+and we know that before changing the first cipher we got this lets call it (1)
+
+```python
+"h" = L1[2] xor C0[2]
+```
+
 and after changing we got this:
-$$
-P1[2] = L1[2] \oplus C0'[2] ==> P1[2] = L1[2] \oplus C0[2] \oplus "h" \oplus "a"
-$$
+
+```python
+P1[2] = L1[2]xor Cp[2] 
+P1[2] = L1[2] xor C0[2] xor "h" xor "a"
+```
+
 we replace with 1 and we got `h` xor `h`  whic is 0 and anything xor 0  = anything so finnaly P1[2] = "a"
 
 and that's how the bit flipping works.

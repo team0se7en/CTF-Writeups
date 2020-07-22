@@ -11,6 +11,8 @@ This repositories contain writeups of some challenges we solved during participa
     - [The Usual Suspects](csictf2020/web/The_Usual_Suspects/README.md)
   - [crypto](csictf2020/crypto)
     - [login_error](csictf2020/crypto/login_error)
+  - [linux](csictf2020/linux) 
+    - [Htb](csictf2020/linux/Htb)
 
 
 

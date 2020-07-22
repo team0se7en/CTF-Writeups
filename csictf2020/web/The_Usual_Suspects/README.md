@@ -11,18 +11,18 @@ When we visit the website we got a page with a form to submit an ice-cream flavo
 
  <img src="src/1.png" alt="page" style="zoom:25%;" />
 
-the request look like `http://chall.csivit.com:30279/?icecream={{chocolate}}` and directly we noticed the possibility of an SSTI attack in icecream parameter.
+the request look like `http://chall.csivit.com:30279/?icecream={{chocolate}}` it lead us to consider the possibility of an SSTI attack in icecream parameter.
 
 ### Exploit the ssti parameter and leak the secret
 
 first we tried this basic payload `{{7*'7'}}` :
 <img src="src/2.png" alt="page" style="zoom:25%;" /> 
 
-after that we tried `http://chall.csivit.com:30279/?icecream={{config}}` and the server returned an exception :
+this confirmed our thoughts of this website being vulnerable to ssti attack , next we tried to get the config by sending this url  `http://chall.csivit.com:30279/?icecream={{config}}` but the server returned an exception :
 
 <img src="src/3.png" alt="page" style="zoom:25%;" /> 
 
-so the server used here was Tornado, which is an asynchronous python web server. Back to the documentation, we
+from this exception we knew that the server used here was Tornado, which is an asynchronous python web server. Back to the documentation, we
 noticed that tornado.web.Application use `settings` dictionary as a way to make application-specific settings like `cookie_secret` available to handlers without using global variables [tornado settings](https://www.tornadoweb.org/en/stable/web.html#tornado.web.Application.settings)
 
 visiting ` http://chall.csivit.com:30279/?icecream={{globals()}} ` and we got :

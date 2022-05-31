@@ -1,4 +1,4 @@
-Malik [@chenx3en](https://mobile.twitter.com/chenx3n) created an excellent Cross Site Scripting XSS challenge in HackINI 2022 ctf.  
+[@chenx3en](https://mobile.twitter.com/chenx3n) created a fun XSS challenge in HackINI 2022 ctf.  
 
 ### TL; DR
 - HTML injection in the title tag.
@@ -341,3 +341,6 @@ The final payload:
 
 ![](images/challenge-12.png)
 
+### References
+  - https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP
+  - https://book.hacktricks.xyz/pentesting-web/deserialization/nodejs-proto-prototype-pollution/client-side-prototype-pollution

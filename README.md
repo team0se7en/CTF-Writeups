@@ -20,3 +20,4 @@ This repositories contain writeups of some challenges we solved during participa
 - [Cybrics2020](Cybrics2020)
   - [CTB](<Cybrics2020/CTB(crack-the-box)>)
   - [OTP](<Cybrics2020/CTB(crack-the-box)/OTP/>)
+- [Hack.INI 10th Edition - 2022](Hack.INI_10th-2022)

